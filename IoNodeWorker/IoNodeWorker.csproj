@@ -46,14 +46,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Com\Lic.cs" />
+    <Compile Include="Com\LicLib\CChar.cs" />
+    <Compile Include="Com\LicLib\onLicEventKey.cs" />
+    <Compile Include="Com\LicLib\onLicItem.cs" />
+    <Compile Include="Com\LicLib\Osnova.cs" />
+    <Compile Include="Com\LicLib\SistemaSchislenia.cs" />
+    <Compile Include="FLic.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="FLic.Designer.cs">
+      <DependentUpon>FLic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FStart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FStart.Designer.cs">
+      <DependentUpon>FStart.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FLic.resx">
+      <DependentUpon>FLic.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -62,6 +77,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -75,6 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Lib\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icon.ico" />
+    <Content Include="Pic\AKS.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,7 +1,7 @@
 ﻿
 namespace IoNodeWorker
 {
-    partial class Form1
+    partial class FStart
     {
         /// <summary>
         /// Обязательная переменная конструктора.

@@ -1,0 +1,12 @@
+.vs
+/IoNodeWorker/bin/Debug/*.exe
+/IoNodeWorker/bin/Debug/*.dll
+/IoNodeWorker/bin/Release/*.exe
+/IoNodeWorker/bin/Release/*.dll
+/IoNodeWorker/obj
+/IoNodeWorker/FLic.cs
+/IoNodeWorker/FLic.Designer.cs
+/IoNodeWorker/FLic.resx
+/IoNodeWorker/Com/Lic.cs
+/IoNodeWorker/Com/LicLib
+/IoNodeWorker/bin/Debug/Log.txt
