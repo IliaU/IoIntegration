@@ -46,17 +46,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Com\Config.cs" />
     <Compile Include="Com\Lic.cs" />
     <Compile Include="Com\LicLib\CChar.cs" />
     <Compile Include="Com\LicLib\onLicEventKey.cs" />
     <Compile Include="Com\LicLib\onLicItem.cs" />
     <Compile Include="Com\LicLib\Osnova.cs" />
     <Compile Include="Com\LicLib\SistemaSchislenia.cs" />
+    <Compile Include="Com\Log.cs" />
+    <Compile Include="Com\Repository.cs" />
+    <Compile Include="Com\RepositoryFarm.cs" />
+    <Compile Include="Com\RepositoryPlg\Lib\RepositoryBase.cs" />
+    <Compile Include="Com\RepositoryPlg\Lib\RepositoryI.cs" />
+    <Compile Include="Com\RepositoryPlg\MsSqlRep.cs" />
+    <Compile Include="Com\RepositoryPlg\MsSql\FSetupConnectDB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Com\RepositoryPlg\MsSql\FSetupConnectDB.Designer.cs">
+      <DependentUpon>FSetupConnectDB.cs</DependentUpon>
+    </Compile>
     <Compile Include="FLic.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FLic.Designer.cs">
       <DependentUpon>FLic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FRepositorySetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FRepositorySetup.Designer.cs">
+      <DependentUpon>FRepositorySetup.cs</DependentUpon>
     </Compile>
     <Compile Include="FStart.cs">
       <SubType>Form</SubType>
@@ -64,6 +83,10 @@
     <Compile Include="FStart.Designer.cs">
       <DependentUpon>FStart.cs</DependentUpon>
     </Compile>
+    <Compile Include="Lib\EventConverter.cs" />
+    <Compile Include="Lib\EventEn.cs" />
+    <Compile Include="Lib\EventLog.cs" />
+    <Compile Include="Lib\EventRepositoryFarm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FLic.resx">
@@ -92,9 +115,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Lib\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Icon.ico" />
     <Content Include="Pic\AKS.jpg" />
