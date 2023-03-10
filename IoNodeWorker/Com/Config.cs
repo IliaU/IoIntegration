@@ -308,12 +308,8 @@ namespace IoNodeWorker.Com
                 }
 
                 // Подгружаем репозиторий
-                try
-                {
-                    if (!string.IsNullOrWhiteSpace(RepositCustomClassTyp)) RepositoryFarm.Setup(RepositoryFarm.CreateRepository(RepositCustomClassTyp, RepositConnectionString), false);
-                }
-                catch (Exception) { }
-
+                if (!string.IsNullOrWhiteSpace(RepositCustomClassTyp)) RepositoryFarm.Setup(RepositoryFarm.CreateRepository(RepositCustomClassTyp, RepositConnectionString), false);
+                
                 // Получаем список объектов
                 foreach (XmlElement item in xmlRoot.ChildNodes)
                 {

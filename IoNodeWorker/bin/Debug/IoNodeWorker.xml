@@ -1,0 +1,2 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AlfaOlapMon Version="1" Trace="False" CountRefresh="3" SecondTimeRefresh="4" RepositCustomClassTyp="MsSqlRep" RepositConnectionString="Data Source=ISV;Initial Catalog=IoIntegrator;Integrated Security=True" />

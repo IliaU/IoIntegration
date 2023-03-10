@@ -92,6 +92,9 @@
     <EmbeddedResource Include="FLic.resx">
       <DependentUpon>FLic.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FStart.resx">
+      <DependentUpon>FStart.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -119,6 +122,8 @@
   <ItemGroup>
     <Content Include="Icon.ico" />
     <Content Include="Pic\AKS.jpg" />
+    <Content Include="Pic\REP-Ofline.jpg" />
+    <Content Include="Pic\REP-Online.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
