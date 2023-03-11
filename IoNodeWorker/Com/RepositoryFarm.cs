@@ -130,7 +130,7 @@ namespace IoNodeWorker.Com
 
             foreach (Type item in typelist)
             {
-                // Проверяем реализовывает ли класс наш интерфейс если да то это провайдер который можно подкрузить
+                // Проверяем реализовывает ли класс наш интерфейс если да то это провайдер который можно подгрузить
                 bool flagI = false;
                 foreach (Type i in item.GetInterfaces())
                 {

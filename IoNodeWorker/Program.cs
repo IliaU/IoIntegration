@@ -67,10 +67,30 @@ namespace IoNodeWorker
                         Com.Config Conf = new Com.Config("IoNodeWorker.xml");
 
                         /*
-                        Com.Repository reptst = Com.RepositoryFarm.CreateRepository("MsSqlRep", "nnnn");
-                        reptst.TestConnect();
-                        reptst.PrintConnectionString();
+
+                        // создаём просто универсальный класс которым будет управлять ядро оно будет дёргать нужные методы которые идентичны для всех видов благина
+                        BLL.Io IoTmp = BLL.IoFarm.CreateIo("Provider");
+                        string d1 = IoTmp.CustomClassTyp;
+
+                        // создаём определённый тип плагинов тоже со своим интерфейсом и который тоже будет дёргаться ядром так как он у нас унаследован от универсального плагина то можно использовать полиморфизм и использовать в обычном списке
+                        BLL.IoPlg.Provider Prv = BLL.IoPlg.ProviderFarm.CreateProvider("MsSqlPrv");
+                        string d2 = Prv.CustomClassTyp;
+                        IoTmp = Prv;
+
+                        // При этом на уровне универсального плагина этот плогин типа провайдер и его можно обратно конвертировать в наш под плагин
+                        string d3 = IoTmp.CustomClassTyp;
+                        // А преобразова в наш кастомный плагин можно понять что это не просто провайдер а провайдер MsSql. 
+                        string d4 = ((BLL.IoPlg.Provider)IoTmp).CustomClassTyp;
+                        // Таким образом в дальнейшем пожно преобразовать уже в тип провайдер  Ms Sql
+                        BLL.IoPlg.ProviderPlg.MsSqlPrv Mstmp = (BLL.IoPlg.ProviderPlg.MsSqlPrv)IoTmp;
+
+                        // Та же логика и спулами провайдеров. Но там скорее всего вложения не будет но если будет то сделано по аналогии с обычными плагинами созданы интерфейсы для того чтобы базовый объект мог дёргать методы из пула объектов. Например по расписанию заставлять плагинные буды отправлять статус или состояние пула для мониторинга итд итп
+                        BLL.IoList dd =  BLL.IoFarm.CreatePulIo("ProviderList");
+                        string ddfs = dd.CustomClassTyp;
                         */
+
+                        BLL.IoList dd =  BLL.IoFarm.CreatePulIo("ProviderList");
+                        string ddfs = dd.CustomClassTyp;
 
                         Application.EnableVisualStyles();
                         Application.SetCompatibleTextRenderingDefault(false);

@@ -4,21 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using IoNodeWorker.BLL.IoPlg.Lib;
+using IoNodeWorker.BLL.IoPlg.ProviderPlg.Lib;
 using IoNodeWorker.Lib;
 
-namespace IoNodeWorker.Com.RepositoryPlg.Lib
+namespace IoNodeWorker.BLL.IoPlg
 {
     /// <summary>
-    /// Базовый класс нашего репозитория
+    /// Класс которые реализует наш провайдер на нодах
     /// </summary>
-    public abstract class RepositoryBase
+    public class Provider : Io, IoI
     {
-        #region Param (private)
+        #region Параметры Private
 
         /// <summary>
         /// Интерфейс для базового класса чтобы он мог дёргать скрытыем методы
         /// </summary>
-        private RepositoryI RepI = null;
+        private ProviderI PrvI = null;
+
+        /// <summary>
+        /// Кастомный объект для ссылочной целостности
+        /// </summary>
+        private string _CustomClassTyp;
 
         /// <summary>
         /// Строка подключения
@@ -27,22 +34,36 @@ namespace IoNodeWorker.Com.RepositoryPlg.Lib
 
         #endregion
 
-        #region Param (public get; protected set;)
-
-        /// <summary>
-        /// Информация о версии базы данных
-        /// </summary>
-        public string VersionDB { get; protected set; }
+        #region Параметры Public
 
         /// <summary>
         /// Наличие подключения к источнику данных
         /// </summary>
         public bool HashConnect { get; protected set; } = false;
 
+        #endregion
+
+        #region Param (public get; protected set;)
+
         /// <summary>
         /// Кастомный объект для ссылочной целостности
         /// </summary>
-        public string CustomClassTyp { get; protected set; } = null;
+        public new string CustomClassTyp
+        {
+            get
+            {
+                return string.Format("{0}.{1}", base.CustomClassTyp, this._CustomClassTyp);
+            }
+            protected set
+            {
+                this._CustomClassTyp = value;
+            }
+        }
+
+        /// <summary>
+        /// Информация о версии базы данных
+        /// </summary>
+        public string VersionDB { get; protected set; }
 
         /// <summary>
         /// Строка подключения
@@ -68,33 +89,21 @@ namespace IoNodeWorker.Com.RepositoryPlg.Lib
             }
         }
 
-        /// <summary>
-        /// Доп объекты для нашего класса
-        /// </summary>
-        public object Tag { get; protected set; }
         #endregion
 
-        #region Param (protected)
-
-        #endregion
-
-        #region Method (public)
+        #region Методы Public
 
         /// <summary>
-        /// Конструктор передаём в него кстомный класс для ссылочной целостности
+        /// Конструктор
         /// </summary>
-        /// <param name="CustomClassTyp">Тип репозитория</param>
-        /// <param name="ConnectionString">Строка подключения к репозиторию</param>
-        public RepositoryBase(string CustomClassTyp, string ConnectionString)
+        public Provider() : base("Provider")
         {
             try
             {
-                this.CustomClassTyp = CustomClassTyp;
-                this.ConnectionString = ConnectionString;
             }
             catch (Exception ex)
             {
-                Com.Log.EventSave(string.Format(@"Ошибка в конструкторе класса:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, false);
+                base.EventSave(string.Format(@"Ошибка в конструкторе класса:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, false);
                 throw ex;
             }
         }
@@ -159,9 +168,9 @@ namespace IoNodeWorker.Com.RepositoryPlg.Lib
         /// <summary>
         /// Вывод строки подключения в лог или интерфейс пользователя с затиранием пароля
         /// </summary>
-        /// <param name="Rep">Репозиторий который мы хотим править</param>
+        /// <param name="Prv">Провайдер который мы хотим править</param>
         /// <returns>True если пользователь решил сохранить репозиторй | False если пользователь не хочет сохранять</returns>
-        public virtual bool SetupConnectDB(ref Repository Rep)
+        public virtual bool SetupConnectDB(ref Provider Prv)
         {
             try
             {
@@ -174,43 +183,6 @@ namespace IoNodeWorker.Com.RepositoryPlg.Lib
             }
         }
 
-        /// <summary>
-        /// Запись лога в базу данных
-        /// </summary>
-        /// <param name="Message">Сообщение которое пишем в базу данных</param>
-        /// <param name="Source">Источник где оно возникло</param>
-        /// <param name="evn">Событие системное которое фиксируем</param>
-        public virtual void EventSaveDb(string Message, string Source, EventEn evn)
-        {
-            try
-            {
-                throw new ApplicationException("Необходимо перезаписать метод EventSave(string Message, string Source, EventEn evn) в наследуемом классе чтобы была возмоность писать в лог.");
-            }
-            catch (Exception ex)
-            {
-                Com.Log.EventSave(string.Format(@"Ошибка в методе печати строки подключения:""{0}""", ex.Message), string.Format("{0}.SetupConnectDB", this.GetType().FullName), EventEn.Error, true, true);
-                throw ex;
-            }
-        }
-
-        /*
-        /// <summary>
-        /// Получение списка инстансов из разы репозитория
-        /// </summary>
-        /// <returns>Возвращаем списокинстансов</returns>
-        public virtual List<TInstance> GetTInstanceList()
-        {
-            try
-            {
-                throw new ApplicationException("Необходимо перезаписать метод List<TInstance> GetTInstanceList() в наследуемом классе чтобы метод работал корректно.");
-            }
-            catch (Exception ex)
-            {
-                Com.Log.EventSave(string.Format(@"Ошибка в методе GetTInstanceList:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, true);
-                throw ex;
-            }
-        }
-        */
         #endregion
 
         #region Method (protected)
@@ -223,11 +195,11 @@ namespace IoNodeWorker.Com.RepositoryPlg.Lib
         /// <param name="evn">Тип события</param>
         /// <param name="isLog">Писать в лог или нет</param>
         /// <param name="Show">Отобразить сообщение пользователю или нет</param>
-        protected void EventSave(string Message, string Source, EventEn evn, bool isLog, bool Show)
+        protected new void EventSave(string Message, string Source, EventEn evn, bool isLog, bool Show)
         {
             try
             {
-                Com.Log.EventSave(string.Format(@"Ошибка в методе {0}:""{1}""", "EventSave", Message), string.Format("Repository.{0}.{1}", CustomClassTyp, Source), EventEn.Error, true, true);
+                Com.Log.EventSave(string.Format(@"Ошибка в методе {0}:""{1}""", "EventSave", Message), string.Format("{0}.{1}", CustomClassTyp, Source), EventEn.Error, true, true);
             }
             catch (Exception ex)
             {
@@ -249,15 +221,15 @@ namespace IoNodeWorker.Com.RepositoryPlg.Lib
         /// <summary>
         /// Внутренний класс для линковки интерфейсов састомного класса скрытых для пользователя
         /// </summary>
-        public class CrossLink
+        public new class CrossLink
         {
             /// <summary>
-            /// Линкуеминтерфейс RepositoryI скрытый для пользователя
+            /// Линкуеминтерфейс ProviderI скрытый для пользователя
             /// </summary>
-            /// <param name="CustRep">Кастомный обьект для линковки</param>
-            public CrossLink(RepositoryBase CustRep)
+            /// <param name="CustPrv">Кастомный обьект для линковки</param>
+            public CrossLink(Provider CustPrv)
             {
-                CustRep.RepI = (RepositoryI)CustRep;
+                CustPrv.PrvI = (ProviderI)CustPrv;
             }
         }
 

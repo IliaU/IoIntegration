@@ -46,6 +46,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\Io.cs" />
+    <Compile Include="BLL\IoFarm.cs" />
+    <Compile Include="BLL\IoList.cs" />
+    <Compile Include="BLL\IoPlg\Lib\EventIoAdd.cs" />
+    <Compile Include="BLL\IoPlg\Lib\EventIoDelete.cs" />
+    <Compile Include="BLL\IoPlg\Lib\EventIoUpdate.cs" />
+    <Compile Include="BLL\IoPlg\Lib\IoBase.cs" />
+    <Compile Include="BLL\IoPlg\Lib\IoI.cs" />
+    <Compile Include="BLL\IoPlg\Lib\IoListBaseEnumerator.cs" />
+    <Compile Include="BLL\IoPlg\Lib\IoListI.cs" />
+    <Compile Include="BLL\IoPlg\Provider.cs" />
+    <Compile Include="BLL\IoPlg\ProviderFarm.cs" />
+    <Compile Include="BLL\IoPlg\ProviderList.cs" />
+    <Compile Include="BLL\IoPlg\ProviderPlg\Lib\ProviderI.cs" />
+    <Compile Include="BLL\IoPlg\ProviderPlg\MsSqlPrv.cs" />
     <Compile Include="Com\Config.cs" />
     <Compile Include="Com\Lic.cs" />
     <Compile Include="Com\LicLib\CChar.cs" />
