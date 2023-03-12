@@ -10,86 +10,76 @@ using IoNodeWorker.Lib;
 namespace IoNodeWorker.BLL.IoPlg
 {
     /// <summary>
-    /// Ферма с нашим плагином
+    /// Ферма с нашим плагином которые реализует объект типа операционная система (namespace в базе данных Os)
     /// </summary>
-    public class ProviderFarm
+    public class OsFarm
     {
         /// <summary>
-        /// Список доступных плагинов провайдера
+        /// Список доступных плагинов типа операционная система (namespace в базе данных Os)
         /// </summary>
-        private static List<string> _ProviderName = null;
+        private static List<string> _OsName = null;
 
         /// <summary>
-        /// Список доступных плагинов провайдера
+        /// Список доступных плагинов типа операционная система (namespace в базе данных Os)
         /// </summary>
-        public static List<string> ListProviderName
+        public static List<string> ListOsName
         {
             get
             {
-                if (_ProviderName == null) _ProviderName = GetListProviderName();
-                return _ProviderName;
+                if (_OsName == null) _OsName = GetListOsName();
+                return _OsName;
             }
             private set { }
         }
 
         /// <summary>
-        /// Создание провайдера определённого типа
+        /// Создание провайдера типа операционная система (namespace в базе данных Os)
         /// </summary>
         /// <param name="CustomClass">Тип плагина</param>
         /// <returns>Универсальный плагин</returns>
-        public static Provider CreateProvider(string CustomClassTyp, string ConnectionString)
+        public static Os CreateOs(string CustomClassTyp)
         {
             try
             {
-                Provider rez = null;
+                Os rez = null;
 
                 // Проверка параметров
                 if (CustomClassTyp == null || CustomClassTyp.Trim() == string.Empty) throw new ApplicationException(string.Format("Не можем создать репозиторий указанного типа: ({0})", CustomClassTyp == null ? "" : CustomClassTyp.Trim()));
 
                 // Проверяем наличие класса в доступных по списку если найден то создаём его
-                if (ListProviderName.Where(a => a == CustomClassTyp).ToArray().Length > 0)
+                if (ListOsName.Where(a => a == CustomClassTyp).ToArray().Length > 0)
                 {
                     // Получаем инфу о класса 1 параметр полный путь например "EducationAnyProvider.Provider.MSSQL.MsSqlProvider", 2 параметр пропускать или не пропускать ошибки сейчас пропускаем, а третий учитывать или нет регистр из первого параметра
                     //, если первый параметр нужно взять из другой зборки то сначала её загружаем Assembly asm = Assembly.LoadFrom("MyApp.exe"); а потом тоже самое только первый параметр кажется будет так "Reminder.Common.PLUGIN.MonitoringSetNedost, РЕШЕНИЕ" 
-                    Type myType = Type.GetType("IoNodeWorker.BLL.IoPlg.ProviderPlg." + CustomClassTyp.Trim(), false, true);
+                    Type myType = Type.GetType("IoNodeWorker.BLL.IoPlg.OsPlg." + CustomClassTyp.Trim(), false, true);
 
                     // Создаём экземпляр объекта  
-                    object[] targ = { (string.IsNullOrWhiteSpace(ConnectionString) ? (object)null : ConnectionString) };
+                    object[] targ = null;// { (string.IsNullOrWhiteSpace(ConnectionString) ? (object)null : ConnectionString) };
                     object obj = Activator.CreateInstance(myType, targ);
-                    rez = (Provider)obj;
+                    rez = (Os)obj;
 
                     // Линкуем в базовый класс специальный скрытый интерфейс для того чтобы базовый класс мог что-то специфическое вызывать в дочернем объекте
-                    Provider.CrossLink CrLink = new Provider.CrossLink(rez);
+                    Os.CrossLink CrLink = new Os.CrossLink(rez);
                 }
 
                 return rez;
             }
             catch (Exception ex)
             {
-                Com.Log.EventSave(string.Format(@"Ошибка при создании класса плагина:""{0}""", ex.Message), "ProviderFarm.CreateProvider", EventEn.Error, true, true);
+                Com.Log.EventSave(string.Format(@"Ошибка при создании класса плагина:""{0}""", ex.Message), "OsFarm.CreateOs", EventEn.Error, true, true);
                 throw ex;
             }
-        }
-
-        /// <summary>
-        /// Создание репозитория определённого типа
-        /// </summary>
-        /// <param name="CustomClass">Тип провайдера</param>
-        /// <returns>Универсальный провайдер</returns>
-        public static Provider CreateProvider(string CustomClassTyp)
-        {
-            return CreateProvider(CustomClassTyp, null);
         }
 
         /// <summary>
         /// Получаем список доступных плагинов
         /// </summary>
         /// <returns>Список имён доступных плагинов</returns>
-        public static List<string> GetListProviderName()
+        public static List<string> GetListOsName()
         {
             List<string> IoName = new List<string>();
 
-            Type[] typelist = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace == "IoNodeWorker.BLL.IoPlg.ProviderPlg").ToArray();
+            Type[] typelist = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.Namespace == "IoNodeWorker.BLL.IoPlg.OsPlg").ToArray();
 
 
             foreach (Type item in typelist)
@@ -98,7 +88,7 @@ namespace IoNodeWorker.BLL.IoPlg
                 bool flagI = false;
                 foreach (Type i in item.GetInterfaces())
                 {
-                    if (i.FullName == "IoNodeWorker.BLL.IoPlg.ProviderPlg.Lib.ProviderI")
+                    if (i.FullName == "IoNodeWorker.BLL.IoPlg.OsPlg.Lib.OsI")
                     {
                         flagI = true;
                         break;
@@ -110,7 +100,7 @@ namespace IoNodeWorker.BLL.IoPlg
                 bool flagB = false;
                 foreach (MemberInfo mi in item.GetMembers())
                 {
-                    if (mi.DeclaringType.FullName == "IoNodeWorker.BLL.IoPlg.Provider")
+                    if (mi.DeclaringType.FullName == "IoNodeWorker.BLL.IoPlg.Os")
                     {
                         flagB = true;
                         break;
@@ -129,13 +119,13 @@ namespace IoNodeWorker.BLL.IoPlg
                     ParameterInfo[] parameters = ctor.GetParameters();
 
                     // если в этом конструктаре 0 параметров то проверяем тип и имя параметра  
-                    if (parameters.Length == 1)
+                    if (parameters.Length == 0)
                     {
-                        if (parameters[0].ParameterType.Name == "String" && parameters[0].Name == "ConnectionString")
-                        {
+                        //if (parameters[0].ParameterType.Name == "String" && parameters[0].Name == "ConnectionString")
+                        //{
                             flag = true;
                             continue;
-                        }
+                        //}
                     }
                 }
                 if (!flag) continue;

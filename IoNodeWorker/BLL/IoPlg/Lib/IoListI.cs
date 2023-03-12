@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using IoNodeWorker.Lib;
+
 namespace IoNodeWorker.BLL.IoPlg.Lib
 {
     /// <summary>
@@ -11,5 +13,11 @@ namespace IoNodeWorker.BLL.IoPlg.Lib
     /// </summary>
     interface IoListI
     {
+        /// <summary>
+        /// Событие установки статуса пула для отслеживания зависаний и качества соединения с разными источниками относительно нод
+        /// </summary>
+        /// <returns>Возвращаем статус проверки</returns>
+        EventEn SetStatusPul();
+
     }
 }

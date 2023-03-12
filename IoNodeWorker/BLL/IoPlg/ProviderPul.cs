@@ -12,12 +12,12 @@ namespace IoNodeWorker.BLL.IoPlg
     /// <summary>
     /// Кастомный список пулов по провайдерам
     /// </summary>
-    public class ProviderList:IoList, IoListI
+    public class ProviderPul:IoList, IoListI
     {
         #region Параметры Private
 
         /// <summary>
-        /// Кастомный объект для ссылочной целостности
+        /// Кастомный объект для понимания какой объект перед нами
         /// </summary>
         private string _CustomClassTyp;
 
@@ -26,7 +26,7 @@ namespace IoNodeWorker.BLL.IoPlg
         #region Param (public get; protected set;)
 
         /// <summary>
-        /// Кастомный объект для ссылочной целостности
+        /// Кастомный объект для понимания какой объект перед нами
         /// </summary>
         public new string CustomClassTyp
         {
@@ -48,7 +48,7 @@ namespace IoNodeWorker.BLL.IoPlg
         /// Конструктор
         /// </summary>
         /// <param name="CustomClass">Тип плагина</param>
-        public ProviderList() : base("ProviderList")
+        public ProviderPul() : base("ProviderPul")
         {
             try
             {
@@ -58,6 +58,28 @@ namespace IoNodeWorker.BLL.IoPlg
                 Com.Log.EventSave(string.Format(@"Ошибка в конструкторе:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, false);
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// Событие установки статуса пула для отслеживания зависаний и качества соединения с разными источниками относительно нод
+        /// </summary>
+        /// <returns>Возвращаем статус проверки</returns>
+        public EventEn SetStatusPul()
+        {
+            EventEn rez = EventEn.Empty;
+            try
+            {
+
+
+                rez = EventEn.Success;
+            }
+            catch (Exception ex)
+            {
+                rez = EventEn.Error;
+                Com.Log.EventSave(string.Format(@"Ошибка в конструкторе:""{0}""", ex.Message), string.Format("{0}.SetStatusPul", this.GetType().FullName), EventEn.Error, true, false);
+                throw ex;
+            }
+            return rez;
         }
 
         #endregion
@@ -77,7 +99,7 @@ namespace IoNodeWorker.BLL.IoPlg
             }
             catch (Exception ex)
             {
-                Com.Log.EventSave(string.Format(@"Ошибка в конструкторе:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, false);
+                Com.Log.EventSave(string.Format(@"Ошибка в конструкторе:""{0}""", ex.Message), string.Format("{0}.Add", this.GetType().FullName), EventEn.Error, true, false);
                 throw ex;
             }
         }
@@ -103,6 +125,7 @@ namespace IoNodeWorker.BLL.IoPlg
             }
             catch (Exception ex)
             {
+                Com.Log.EventSave(string.Format(@"Ошибка в конструкторе:""{0}""", ex.Message), string.Format("{0}.EventSave", this.GetType().FullName), EventEn.Error, true, false);
                 throw ex;
             }
         }

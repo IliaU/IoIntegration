@@ -7,7 +7,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[IoInt_Log](
+CREATE TABLE [dbo].[Log](
 	[DateTime] [datetime] NOT NULL,
 	[Message] [varchar](max) NOT NULL,
 	[Source] [varchar](300) NOT NULL,
@@ -15,11 +15,11 @@ CREATE TABLE [dbo].[IoInt_Log](
 ) ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[IoInt_Log] ADD  DEFAULT (getdate()) FOR [DateTime]
+ALTER TABLE [dbo].[Log] ADD  DEFAULT (getdate()) FOR [DateTime]
 GO
 
 -- »ндекс дл€ производительности логировани€
-CREATE UNIQUE CLUSTERED INDEX [PK_Id_log] ON [dbo].[IoInt_Log]
+CREATE UNIQUE CLUSTERED INDEX [PK_Id_log] ON [dbo].[Log]
 (
 	[DateTime] DESC
 )

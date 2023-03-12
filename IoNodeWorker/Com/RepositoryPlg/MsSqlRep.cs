@@ -245,7 +245,7 @@ namespace IoNodeWorker.Com.RepositoryPlg
         public override void EventSaveDb(string Message, string Source, EventEn evn)
         {
             //int rez = 0;
-            string SQL = string.Format("insert into [dbo].[IoInt_Log]([DateTime], [Message], [Source], [Status]) Values(GetDate(), '{0}', '{1}', '{2}')"
+            string SQL = string.Format("insert into [dbo].[Log]([DateTime], [Message], [Source], [Status]) Values(GetDate(), '{0}', '{1}', '{2}')"
                 , Message.Replace("'", "''"), Source.Replace("'", "''"), evn.ToString());
 
             try

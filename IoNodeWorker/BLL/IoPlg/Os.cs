@@ -4,53 +4,68 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using IoNodeWorker.BLL.IoPlg.Lib;
+using IoNodeWorker.BLL.IoPlg.OsPlg.Lib;
 using IoNodeWorker.Lib;
 
-namespace IoNodeWorker.BLL.IoPlg.Lib
+namespace IoNodeWorker.BLL.IoPlg
 {
     /// <summary>
-    /// Базовый класс наших плагинов
+    /// Класс которые реализует объект типа операционная система (namespace в базе данных Os)
     /// </summary>
-    public abstract partial class IoBase
+    public class Os : Io, IoI
     {
-        #region Param (private)
+        #region Параметры Private
 
         /// <summary>
         /// Интерфейс для базового класса чтобы он мог дёргать скрытыем методы
         /// </summary>
-        private IoI InterfIo = null;
+        private OsI OsInterface = null;
+
+        /// <summary>
+        /// Кастомный объект для ссылочной целостности
+        /// </summary>
+        private string _CustomClassTyp;
+
+        #endregion
+
+        #region Параметры Public
+
 
         #endregion
 
         #region Param (public get; protected set;)
 
         /// <summary>
-        /// Индекс в списке IoList
-        /// </summary>
-        public int index { get; protected set; } = -1;
-
-        /// <summary>
         /// Кастомный объект для понимания какой объект перед нами
         /// </summary>
-        public string CustomClassTyp { get; protected set; } = null;
+        public new string CustomClassTyp
+        {
+            get
+            {
+                return string.Format("{0}.{1}", base.CustomClassTyp, this._CustomClassTyp);
+            }
+            protected set
+            {
+                this._CustomClassTyp = value;
+            }
+        }
 
         #endregion
 
-        #region Method (public)
+        #region Методы Public
 
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="CustomClassTyp">Тип репозитория</param>
-        public IoBase(string CustomClassTyp)
+        public Os() : base("Os")
         {
             try
             {
-                this.CustomClassTyp = CustomClassTyp;
             }
             catch (Exception ex)
             {
-                Com.Log.EventSave(string.Format(@"Ошибка в конструкторе класса:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, false);
+                base.EventSave(string.Format(@"Ошибка в конструкторе класса:""{0}""", ex.Message), this.GetType().FullName, EventEn.Error, true, false);
                 throw ex;
             }
         }
@@ -59,7 +74,7 @@ namespace IoNodeWorker.BLL.IoPlg.Lib
 
         #region Method (public virtual)
 
-
+        
         #endregion
 
         #region Method (protected)
@@ -72,24 +87,17 @@ namespace IoNodeWorker.BLL.IoPlg.Lib
         /// <param name="evn">Тип события</param>
         /// <param name="isLog">Писать в лог или нет</param>
         /// <param name="Show">Отобразить сообщение пользователю или нет</param>
-        protected void EventSave(string Message, string Source, EventEn evn, bool isLog, bool Show)
+        protected new void EventSave(string Message, string Source, EventEn evn, bool isLog, bool Show)
         {
             try
             {
-                Com.Log.EventSave(string.Format(@"Ошибка в методе {0}:""{1}""", "EventSave", Message), string.Format("Io.{0}.{1}", CustomClassTyp, Source), EventEn.Error, true, true);
+                Com.Log.EventSave(string.Format(@"Ошибка в методе {0}:""{1}""", "EventSave", Message), string.Format("{0}.{1}", CustomClassTyp, Source), EventEn.Error, true, true);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
-        /*
-        protected string test()
-        {
-            return RepI.getStr();
-        }
-        */
 
         #endregion
 
@@ -98,15 +106,15 @@ namespace IoNodeWorker.BLL.IoPlg.Lib
         /// <summary>
         /// Внутренний класс для линковки интерфейсов састомного класса скрытых для пользователя
         /// </summary>
-        public class CrossLink
+        public new class CrossLink
         {
             /// <summary>
-            /// Линкуеминтерфейс IoI скрытый для пользователя
+            /// Линкуем интерфейс OsI скрытый для пользователя
             /// </summary>
-            /// <param name="CustIo">Кастомный обьект для линковки</param>
-            public CrossLink(IoBase CustIo)
+            /// <param name="CustPrv">Кастомный обьект для линковки</param>
+            public CrossLink(Os CustOs)
             {
-                CustIo.InterfIo = (IoI)CustIo;
+                CustOs.OsInterface = (OsI)CustOs;
             }
         }
 

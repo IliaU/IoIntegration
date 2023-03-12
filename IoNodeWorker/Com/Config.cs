@@ -47,6 +47,11 @@ namespace IoNodeWorker.Com
         /// Тайм аут в секундах между попытками повторения подключений
         /// </summary>
         private static int _SecondTimeRefresh = 4;
+
+        /// <summary>
+        /// Тайм аут между проверками статуса на уровне пулов с плагинами в секундах
+        /// </summary>
+        private static int _SecondPulRefreshStatus = 10;
         #endregion
 
         #region Public Param
@@ -94,9 +99,28 @@ namespace IoNodeWorker.Com
             get { return _SecondTimeRefresh; }
             private set { }
         }
+
+        /// <summary>
+        /// Тайм аут между проверками статуса на уровне пулов с плагинами в секундах
+        /// </summary>
+        public static int SecondPulRefreshStatus
+        {
+            get 
+            { 
+                return _SecondPulRefreshStatus; 
+            }
+            set 
+            {
+                xmlRoot.SetAttribute("SecondPulRefreshStatus", value.ToString());
+                Save();
+                _SecondPulRefreshStatus = value;
+            }
+        }
+
         #endregion
 
         #region Public metod
+
         /// <summary>
         /// Коонструктор
         /// </summary>
@@ -210,6 +234,7 @@ namespace IoNodeWorker.Com
                 xmlMain.SetAttribute("Trace", _Trace.ToString());
                 xmlMain.SetAttribute("CountRefresh", _CountRefresh.ToString());
                 xmlMain.SetAttribute("SecondTimeRefresh", _SecondTimeRefresh.ToString());
+                xmlMain.SetAttribute("SecondPulRefreshStatus", _SecondTimeRefresh.ToString());
                 Document.AppendChild(xmlMain);
 
                 // Сохранение в файл
@@ -254,6 +279,10 @@ namespace IoNodeWorker.Com
                     //
                     if (xmlRoot.Attributes[i].Name == "SecondTimeRefresh")
                         try { _SecondTimeRefresh = int.Parse(xmlRoot.Attributes[i].Value.ToString()); }
+                        catch (Exception) { }
+                    //
+                    if (xmlRoot.Attributes[i].Name == "SecondPulRefreshStatus")
+                        try { _SecondPulRefreshStatus = int.Parse(xmlRoot.Attributes[i].Value.ToString()); }
                         catch (Exception) { }
 
                     /*

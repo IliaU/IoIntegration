@@ -17,6 +17,16 @@ namespace IoNodeWorker.BLL
     public class IoFarm
     {
         /// <summary>
+        /// Список крос классов для управления базовым классом на уровне нашего пула
+        /// </summary>
+        private static List<IoBase.IoListBase.CrossLink> CurentPulCrossLink = null;
+
+        /// <summary>
+        /// Список доступных пулов со своими классами
+        /// </summary>
+        public static List<IoList> CurentPulList = null;
+
+        /// <summary>
         /// Список доступных плагинов
         /// </summary>
         private static List<string> _IoName = null;
@@ -255,5 +265,94 @@ namespace IoNodeWorker.BLL
 
             return IoPulName;
         }
+
+        /// <summary>
+        /// Процесс создания и запуска процессов в наших пулах с плагинами
+        /// </summary>
+        public static void CreateCurentPulList()
+        {
+            try
+            {
+                // Если список пулов ещё не создавали то создаём его
+                if (CurentPulList == null)
+                {
+                    CurentPulList = new List<IoList>();
+                    CurentPulCrossLink = new List<IoBase.IoListBase.CrossLink>();
+
+                    // Пробегаем по всем доступным объектам
+                    foreach (string itemPul in ListIoPulName)
+                    {
+                        // Создаём нужный нам пул для того чтобы его добавить в список существующих в работе пулов
+                        IoList nPul = CreatePulIo(itemPul);
+                        IoBase.IoListBase.CrossLink nPulCrossLink = new IoBase.IoListBase.CrossLink(nPul);
+
+                        // Добавляем наш пул
+                        CurentPulCrossLink.Add(nPulCrossLink);
+                        CurentPulList.Add(nPul);
+                        
+                        // Запускаем процесс на нашем пуле в базовом классе
+                        nPulCrossLink.StartCompileListing();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Com.Log.EventSave(string.Format(@"Ошибка при создании класса плагина:""{0}""", ex.Message), "IoFarm.CreateCurentPuulList", EventEn.Error, true, true);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Остановка аснхронных процессов перед выключением всех потоков
+        /// </summary>
+        public static void Stop()
+        {
+            try
+            {
+                // Если список пулов ещё не создавали то создаём его
+                if (CurentPulList != null)
+                {
+                    // Пробегаем по всем доступным объектам
+                    foreach (IoBase.IoListBase.CrossLink itemPul in CurentPulCrossLink)
+                    {
+                        itemPul.StopCompileListing();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Com.Log.EventSave(string.Format(@"Ошибка при создании класса плагина:""{0}""", ex.Message), "IoFarm.Stop", EventEn.Error, true, true);
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Остановка аснхронных процессов перед выключением всех потоков
+        /// </summary>
+        /// <param name="Aborting">True если с прерывением всех процессов жёстное отклучение всех процессов</param>
+        public static void Join(bool Aborting)
+        {
+            try
+            {
+                // Если список пулов ещё не создавали то создаём его
+                if (CurentPulList != null)
+                {
+                    // Пробегаем по всем доступным объектам
+                    Stop();
+
+                    // Пробегаем по всем доступным объектам
+                    foreach (IoBase.IoListBase.CrossLink itemPul in CurentPulCrossLink)
+                    {
+                        itemPul.Join(Aborting);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Com.Log.EventSave(string.Format(@"Ошибка при создании класса плагина:""{0}""", ex.Message), "IoFarm.Join", EventEn.Error, true, true);
+                throw ex;
+            }
+        }
+
     }
 }

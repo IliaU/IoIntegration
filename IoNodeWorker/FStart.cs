@@ -106,7 +106,6 @@ namespace IoNodeWorker
         }
         #endregion
 
-
         #region Обработка статусов в главном окне
 
         /// <summary>

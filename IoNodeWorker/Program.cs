@@ -65,6 +65,9 @@ namespace IoNodeWorker
                         // Инициализвция классов
                         Com.Log Log = new Com.Log("IoNodeWorker.log");
                         Com.Config Conf = new Com.Config("IoNodeWorker.xml");
+                        
+                        // Запускаем создание пулов и запускаем в них системные процессы
+                        BLL.IoFarm.CreateCurentPulList();
 
                         /*
 
@@ -87,10 +90,11 @@ namespace IoNodeWorker
                         // Та же логика и спулами провайдеров. Но там скорее всего вложения не будет но если будет то сделано по аналогии с обычными плагинами созданы интерфейсы для того чтобы базовый объект мог дёргать методы из пула объектов. Например по расписанию заставлять плагинные буды отправлять статус или состояние пула для мониторинга итд итп
                         BLL.IoList dd =  BLL.IoFarm.CreatePulIo("ProviderList");
                         string ddfs = dd.CustomClassTyp;
-                        */
+                        
 
                         BLL.IoList dd =  BLL.IoFarm.CreatePulIo("ProviderList");
                         string ddfs = dd.CustomClassTyp;
+                        */
 
                         Application.EnableVisualStyles();
                         Application.SetCompatibleTextRenderingDefault(false);
@@ -105,9 +109,14 @@ namespace IoNodeWorker
 
                         }
 
+                        // Даём команды на остановку асинхронных процессов
+                        BLL.IoFarm.Stop();                  // Во все пулы которые у нас существуют
+                        RunGC = false;                      // Сборщику мусора
+
+
                         // Закрываем и ждём завершения GB
-                        RunGC = false;
                         thr.Join();
+                        BLL.IoFarm.Join(false);             // Мягкое хавершение процессов дав доработать по текущим заданиям
                     }
                 }
             }

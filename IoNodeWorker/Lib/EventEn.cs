@@ -16,6 +16,10 @@ namespace IoNodeWorker.Lib
         /// </summary>
         Empty,
         /// <summary>
+        /// Успех
+        /// </summary>
+        Success,
+        /// <summary>
         /// Дамп
         /// </summary>
         Dump,

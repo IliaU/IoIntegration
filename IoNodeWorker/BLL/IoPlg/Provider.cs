@@ -46,7 +46,7 @@ namespace IoNodeWorker.BLL.IoPlg
         #region Param (public get; protected set;)
 
         /// <summary>
-        /// Кастомный объект для ссылочной целостности
+        /// Кастомный объект для понимания какой объект перед нами
         /// </summary>
         public new string CustomClassTyp
         {
@@ -224,7 +224,7 @@ namespace IoNodeWorker.BLL.IoPlg
         public new class CrossLink
         {
             /// <summary>
-            /// Линкуеминтерфейс ProviderI скрытый для пользователя
+            /// Линкуем интерфейс ProviderI скрытый для пользователя
             /// </summary>
             /// <param name="CustPrv">Кастомный обьект для линковки</param>
             public CrossLink(Provider CustPrv)
