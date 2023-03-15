@@ -49,6 +49,10 @@
     <Compile Include="BLL\Io.cs" />
     <Compile Include="BLL\IoFarm.cs" />
     <Compile Include="BLL\IoList.cs" />
+    <Compile Include="BLL\IoPlg\Eventer.cs" />
+    <Compile Include="BLL\IoPlg\EventerFarm.cs" />
+    <Compile Include="BLL\IoPlg\EventerPlg\Lib\EventerI.cs" />
+    <Compile Include="BLL\IoPlg\EventerPul.cs" />
     <Compile Include="BLL\IoPlg\Lib\EventIoAdd.cs" />
     <Compile Include="BLL\IoPlg\Lib\EventIoDelete.cs" />
     <Compile Include="BLL\IoPlg\Lib\EventIoUpdate.cs" />

@@ -5,22 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 
 using IoNodeWorker.BLL.IoPlg.Lib;
-using IoNodeWorker.BLL.IoPlg.OsPlg.Lib;
+using IoNodeWorker.BLL.IoPlg.EventerPlg.Lib;
 using IoNodeWorker.Lib;
 
 namespace IoNodeWorker.BLL.IoPlg
 {
     /// <summary>
-    /// Класс которые реализует объект типа операционная система (namespace в базе данных Os)
+    /// Класс которые реализует объект типа событие например шедуллер (namespace в базе данных Eventer)
     /// </summary>
-    public class Os : Io, IoI
+    public class Eventer : Io, IoI
     {
         #region Параметры Private
 
         /// <summary>
         /// Интерфейс для базового класса чтобы он мог дёргать скрытыем методы
         /// </summary>
-        private OsI OsInterface = null;
+        private EventerI EventerInterface = null;
 
         /// <summary>
         /// Кастомный объект для ссылочной целостности
@@ -58,7 +58,7 @@ namespace IoNodeWorker.BLL.IoPlg
         /// <summary>
         /// Конструктор
         /// </summary>
-        public Os() : base("Os")
+        public Eventer() : base("Eventer")
         {
             try
             {
@@ -74,7 +74,7 @@ namespace IoNodeWorker.BLL.IoPlg
 
         #region Method (public virtual)
 
-        
+
         #endregion
 
         #region Method (protected)
@@ -111,10 +111,10 @@ namespace IoNodeWorker.BLL.IoPlg
             /// <summary>
             /// Линкуем интерфейс OsI скрытый для пользователя
             /// </summary>
-            /// <param name="CustOs">Кастомный обьект для линковки</param>
-            public CrossLink(Os CustOs)
+            /// <param name="CustEventer">Кастомный обьект для линковки</param>
+            public CrossLink(Eventer CustEventer)
             {
-                CustOs.OsInterface = (OsI)CustOs;
+                CustEventer.EventerInterface = (EventerI)CustEventer;
             }
         }
 
