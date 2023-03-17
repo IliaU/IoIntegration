@@ -1,0 +1,29 @@
+﻿
+
+<div class="row">
+    <div class="col text-center">
+        <h3>Recursive @RezLen - @RezOut </h3>
+    </div>
+</div>
+
+@if (int.Parse(RezLen) > 0)
+{
+    <br />
+    <Recursive RezLen="@((int.Parse(RezLen)-1).ToString())" />
+}
+
+
+@code {
+    public int RezOut
+    {
+        get
+        {
+            return new Random().Next(-20, 55);
+        }
+        private set { }
+    }
+
+    [Parameter]
+    public string RezLen { get; set; }
+}
+

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoNodeWorker", "IoNodeWorker\IoNodeWorker.csproj", "{2AC492BE-D4A8-432F-97E5-6D3363411A8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoNode", "IoNode\IoNode.csproj", "{B8D5EA45-F699-447C-A864-51B84602C80B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IoNode", "IoNode\IoNode.csproj", "{B8D5EA45-F699-447C-A864-51B84602C80B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
