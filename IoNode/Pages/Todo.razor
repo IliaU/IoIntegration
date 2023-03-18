@@ -1,0 +1,77 @@
+﻿@page "/todo";
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-center">Todo (@(todos.Count(item => !item.IsDone))) </h2>
+
+            <div class="row">
+                <div class="col-xl-3">
+                    <input type="date" class="form-control" />
+                </div>
+                <div class="col-xl-3">
+                    <input type="datetime-local" class="form-control" />
+                </div>
+            </div>
+            
+
+            <table class="table table-bordered">
+                <thead class="table-primary">
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Готово</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                @foreach (var item in todos)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="@(item.IsDone ? "color: green; text-decoration: line-through" : "color: reed;" )">
+                                    @item.Title
+                                </div>
+                            </td>
+                            <td>
+                                <input type="checkbox" @bind="item.IsDone" />
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" @onclick="(() => DeleteTodo(item))">Удалить</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+
+            <div class="row">
+                <div class="col">
+                    <input class="form-control" placeholder="Введите задачу" @bind="newtodo" />
+                </div>
+                <div class="col">
+                    <button  class="btn btn-success" @onclick="AddTodo">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private IList<TodoItem> todos = new List<TodoItem>();
+
+    private string newtodo;
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newtodo))
+        {
+            todos.Add(new TodoItem { Title = newtodo});
+            newtodo = string.Empty;
+        }
+    }
+
+    private void DeleteTodo(TodoItem deletedItem)
+    {
+        todos.Remove(deletedItem);
+    }
+}
