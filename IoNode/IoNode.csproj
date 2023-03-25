@@ -5,4 +5,9 @@
     <UserSecretsId>e2f90719-8c4b-4c48-930d-d7ff74ae02eb</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
+  </ItemGroup>
+
 </Project>

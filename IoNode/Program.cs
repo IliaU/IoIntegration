@@ -7,6 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
+
 namespace IoNode
 {
     public class Program
@@ -22,5 +26,11 @@ namespace IoNode
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        // Клиент для обращения к беку за данными
+        public static HttpClient IoIodeWebClientIsv = new HttpClient()
+        {
+            BaseAddress = new Uri("http://isv:5000"),
+        };
     }
 }

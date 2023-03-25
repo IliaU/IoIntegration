@@ -61,12 +61,65 @@
 
     private string newtodo;
 
-    private void AddTodo()
+    private async void AddTodo()
     {
         if (!string.IsNullOrWhiteSpace(newtodo))
         {
             todos.Add(new TodoItem { Title = newtodo});
             newtodo = string.Empty;
+        }
+
+        try
+        {
+            Console.WriteLine("Проверка вывода в консоль");
+
+            //Гарантирует успешность ответа.
+            using (HttpResponseMessage resp = await IoNode.Program.IoIodeWebClientIsv.GetAsync("config"))
+            {
+                // Записывает сведения о запросе в консоль.
+                HttpResponseMessage respMes = resp.EnsureSuccessStatusCode();
+                if (respMes.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    string ee = respMes.ToString();
+
+                    // Считывает текст ответа как строку.
+                    var jsonResponse = await resp.Content.ReadAsStringAsync();
+
+                    // Читаем контерн в виде потока данных
+                    //System.IO.Stream jsonResponseStream = await resp.Content.ReadAsStreamAsync();  // таким способом можно сразу читать из респонса
+
+                    // Создаём класс для примера
+                    JsonTestClass P1 = new JsonTestClass { UserId = 1, Id = 1, Title = "пример", Completed = true };
+
+                    // Пример сериализации в обе стороны
+                    string strP1 = System.Text.Json.JsonSerializer.Serialize(P1);
+                    JsonTestClass P2 = System.Text.Json.JsonSerializer.Deserialize<JsonTestClass>(strP1);
+
+
+                    // Для пример создам объект такой в нучную чтобы продемонстрировать работу
+                    System.Net.Http.Json.JsonContent jsonCont = System.Net.Http.Json.JsonContent.Create(P1);
+                    System.IO.Stream jsonResponseStream = await jsonCont.ReadAsStreamAsync();
+                    // Таким образом смотрим что внутри контента так для примера
+                    string strP2 = await jsonCont.ReadAsStringAsync();
+
+                    // Таким способом можно сразу десериализовать из ответа респонса как в коменте сверху при чтении потока
+                    JsonTestClass hh = await System.Text.Json.JsonSerializer.DeserializeAsync<JsonTestClass>(jsonResponseStream);
+
+                    // Таким образом десериализация должна пройти но скорее всего по причине того что я сделал его сам не получилось но моэнообойти присто сделав десириализацию вот таким путём
+                    JsonTestClass P3 = System.Text.Json.JsonSerializer.Deserialize<JsonTestClass>(strP2);
+
+                    /* Gнял почему не может десериализовать оказывается большие буквы не нравятся
+                    {"UserId":1,"Id":1,"Title":"\u043F\u0440\u0438\u043C\u0435\u0440","Completed":true}
+                    {"userId":1,"id":1,"title":"\u043F\u0440\u0438\u043C\u0435\u0440","completed":true}
+                    */
+                }
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+         
         }
     }
 
