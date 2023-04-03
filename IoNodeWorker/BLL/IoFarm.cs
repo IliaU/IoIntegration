@@ -287,8 +287,8 @@ namespace IoNodeWorker.BLL
                         IoBase.IoListBase.CrossLink nPulCrossLink = new IoBase.IoListBase.CrossLink(nPul);
 
                         // Добавляем наш пул
-                        CurentPulCrossLink.Add(nPulCrossLink);
-                        CurentPulList.Add(nPul);
+                        CurentPulCrossLink.Add(nPulCrossLink);          // Для управления пулом из нашего воркера
+                        CurentPulList.Add(nPul);                        // Добавление пула для доступности пользователям
                         
                         // Запускаем процесс на нашем пуле в базовом классе
                         nPulCrossLink.StartCompileListing();

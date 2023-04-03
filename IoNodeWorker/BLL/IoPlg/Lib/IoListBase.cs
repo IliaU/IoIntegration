@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Reflection;
 using System.Collections;
 using System.Threading;
+using IoNodeWorker.Com.RepositoryPlg.Lib;
 using IoNodeWorker.Lib;
 
 namespace IoNodeWorker.BLL.IoPlg.Lib
@@ -359,6 +361,14 @@ namespace IoNodeWorker.BLL.IoPlg.Lib
                             // Передаём управление нашему кастомному пулу чтобы он мог сохранить свою часть статусов в своей ему известной логике
                             // И получаем результат получилось ли сохранить или возникла ошибка
                             EventEn LastStatus = IoListI.SetStatusPul();
+
+                            // Если появилось подключение к базе данных и ещё небыло успешной регистрации нашего пула то делаем её в системе для того чтобы сервис знал о том что сервис такой существует 
+                            if (Com.RepositoryFarm.CurentRep != null && Com.RepositoryFarm.CurentRep.HashConnect)
+                            {
+                                // Фиксируем версию нашего приложения и его статус
+                                Version Ver = Assembly.GetExecutingAssembly().GetName().Version;
+                                ((RepositoryI)Com.RepositoryFarm.CurentRep).PulBasicSetStatus(Environment.MachineName, this.CustomClassTyp, DateTime.Now, Ver.ToString(), LastStatus.ToString());
+                            }
                         }
 
                         Thread.Sleep(1000);     // Тайм аут между проверками статуса

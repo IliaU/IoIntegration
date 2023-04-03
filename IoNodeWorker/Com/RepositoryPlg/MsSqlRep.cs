@@ -603,6 +603,85 @@ namespace IoNodeWorker.Com.RepositoryPlg
         */
         #endregion
 
+        #region Методы Public RepositoryI
+        /// <summary>
+        /// Метод для регистрации состояния пула с потоками
+        /// </summary>
+        /// <param name="MachineName">Имя машины где работает пул потоков</param>
+        /// <param name="CustomClassTyp">Имя класса с потоками этого вида</param>
+        /// <param name="LastDateReflection">Дата и время последнего получения статуса</param>
+        /// <param name="VersionPul">Версия пула с потоками</param>
+        /// <param name="LastStatusCustom">Статус который получили от самих потоков в этом пуле</param>
+        public void PulBasicSetStatus(string MachineName, string CustomClassTyp, DateTime LastDateReflection, string VersionPul, string LastStatusCustom)
+        {
+            string SQL = "[dbo].[PulBasicSetStatus]";
+            try
+            {
+                // Проверка подключения
+                using (SqlConnection con = new SqlConnection(ConnectionString))
+                {
+                    con.Open();
+                    
+                    using (SqlCommand com = new SqlCommand(SQL, con))
+                    {
+                        com.CommandTimeout = 900;  // 15 минут
+                        com.CommandType = CommandType.StoredProcedure;
+                        //
+                        //SqlParameter PIdOut = new SqlParameter("@IdOut", SqlDbType.Int);
+                        //PIdOut.Direction = ParameterDirection.ReturnValue;
+                        //com.Parameters.Add(PIdOut);
+                        //
+                        //SqlParameter PId = new SqlParameter("@Id", SqlDbType.Int);
+                        //PId.Direction = ParameterDirection.Input;
+                        //if (nTInstance.ID != null) PId.Value = (int)nTInstance.ID;
+                        //com.Parameters.Add(PId);
+                        //
+                        SqlParameter PMachineName = new SqlParameter("@MachineName", SqlDbType.VarChar, 100);
+                        PMachineName.Direction = ParameterDirection.Input;
+                        PMachineName.Value = MachineName;
+                        com.Parameters.Add(PMachineName);
+                        //
+                        SqlParameter PCustomClassTyp = new SqlParameter("@CustomClassTyp", SqlDbType.VarChar, 300);
+                        PCustomClassTyp.Direction = ParameterDirection.Input;
+                        PCustomClassTyp.Value = CustomClassTyp;
+                        com.Parameters.Add(PCustomClassTyp);
+                        //
+                        SqlParameter PLastDateReflection = new SqlParameter("@LastDateReflection", SqlDbType.DateTime);
+                        PLastDateReflection.Direction = ParameterDirection.Input;
+                        PLastDateReflection.Value = LastDateReflection;
+                        com.Parameters.Add(PLastDateReflection);
+                        //
+                        SqlParameter PVersionPul = new SqlParameter("@VersionPul", SqlDbType.VarChar, 50);
+                        PVersionPul.Direction = ParameterDirection.Input;
+                        PVersionPul.Value = VersionPul;
+                        com.Parameters.Add(PVersionPul);
+                        //
+                        SqlParameter PLastStatusCustom = new SqlParameter("@LastStatusCustom", SqlDbType.VarChar, 50);
+                        PLastStatusCustom.Direction = ParameterDirection.Input;
+                        PLastStatusCustom.Value = LastStatusCustom;
+                        com.Parameters.Add(PLastStatusCustom);
+
+                        // Строим строку которую воткнём в дамп в случае падения
+                        SQL = GetStringPrintPar(com);
+
+                        // Запускаем процедуру
+                        com.ExecuteNonQuery();
+
+                        // Получаем идентификатор товара
+                        //rez = int.Parse(PIdOut.Value.ToString());
+                    }
+
+                    con.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку если её должен видеть пользователь или если взведён флаг трассировке в файле настройки программы
+                if (Com.Config.Trace) base.EventSave(string.Format(@"Ошибка при проверке подключения:""{0}""", ex.Message), "PulBasicSetStatus", EventEn.Error, true, false);
+            }
+        }
+        #endregion
+
         #region Методы Private Method
 
         /// <summary>

@@ -7,10 +7,18 @@ using System.Threading.Tasks;
 namespace IoNodeWorker.Com.RepositoryPlg.Lib
 {
     /// <summary>
-    /// Интерфейс который должны реализовать все классы для работы с нашим репозиторием
+    /// Интерфейс который должны реализовать все классы для работы с нашим репозиторием но сами пулы дёргать и знать о них ничего не должны
     /// </summary>
     interface RepositoryI
     {
-        //string getStr();
+        /// <summary>
+        /// Метод для регистрации состояния пула с потоками
+        /// </summary>
+        /// <param name="MachineName">Имя машины где работает пул потоков</param>
+        /// <param name="CustomClassTyp">Имя класса с потоками этого вида</param>
+        /// <param name="LastDateReflection">Дата и время последнего получения статуса</param>
+        /// <param name="VersionPul">Версия пула с потоками</param>
+        /// <param name="LastStatusCustom">Статус который получили от самих потоков в этом пуле</param>
+        void PulBasicSetStatus(string MachineName, string CustomClassTyp, DateTime LastDateReflection, string VersionPul, string LastStatusCustom);
     }
 }
