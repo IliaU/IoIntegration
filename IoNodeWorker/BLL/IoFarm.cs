@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using IoNodeWorker.BLL.IoPlg.Lib;
 using System.Reflection;
+using System.Threading;
+using IoNodeWorker.Com.RepositoryPlg.Lib;
+using IoNodeWorker.BLL.IoPlg.Lib;
 using IoNodeWorker.Lib;
 
 
@@ -16,6 +18,16 @@ namespace IoNodeWorker.BLL
     /// </summary>
     public class IoFarm
     {
+        /// <summary>
+        /// Поток для мониторинга состояния ноды и её здооровбя целиком
+        /// </summary>
+        private static Thread ThrCreateCurentPulList;
+
+        /// <summary>
+        /// Состояние мониторинга по всей ноде
+        /// </summary>
+        private static bool IsRunThrCreateCurentPulList = false;
+
         /// <summary>
         /// Список крос классов для управления базовым классом на уровне нашего пула
         /// </summary>
@@ -276,6 +288,14 @@ namespace IoNodeWorker.BLL
                 // Если список пулов ещё не создавали то создаём его
                 if (CurentPulList == null)
                 {
+                    // Асинхронный запуск процесса
+                    IsRunThrCreateCurentPulList = true;
+                    ThrCreateCurentPulList = new Thread(ACreateCurentPulList);
+                    ThrCreateCurentPulList.Name = "AThrCreateCurentPulList";
+                    ThrCreateCurentPulList.IsBackground = true;
+                    ThrCreateCurentPulList.Start();
+
+
                     CurentPulList = new List<IoList>();
                     CurentPulCrossLink = new List<IoBase.IoListBase.CrossLink>();
 
@@ -303,15 +323,55 @@ namespace IoNodeWorker.BLL
         }
 
         /// <summary>
+        /// Асинхронный статус для фиксации состояния всей ноды целиком чтобы видеть работает она сейчас или нет на стороне базы
+        /// </summary>
+        private static void ACreateCurentPulList()
+        {
+            try
+            {
+                // Устанавливаем тайм из конфига
+                int CountWhile = Com.Config.SecondPulRefreshStatus;
+
+                while (IsRunThrCreateCurentPulList)
+                {
+                    if (CountWhile == 0)
+                    {
+                        // Устанавливаем тайм аут из конфига
+                        CountWhile = Com.Config.SecondPulRefreshStatus;
+                                                
+                        // Если появилось подключение к базе данных и ещё небыло успешной регистрации нашего пула то делаем её в системе для того чтобы сервис знал о том что сервис такой существует 
+                        if (Com.RepositoryFarm.CurentRep != null && Com.RepositoryFarm.CurentRep.HashConnect)
+                        {
+                            // Фиксируем версию нашего приложения и его статус
+                            Version Ver = Assembly.GetExecutingAssembly().GetName().Version;
+                            ((RepositoryI)Com.RepositoryFarm.CurentRep).NodeSetStatus(Environment.MachineName, DateTime.Now, Ver.ToString(), EventEn.Runned.ToString());
+                        }
+                    }
+
+                    Thread.Sleep(1000);     // Тайм аут между проверками статуса
+                    CountWhile--;
+                }
+            }
+            catch (Exception ex)
+            {
+                Com.Log.EventSave(string.Format(@"Ошибка при создании класса плагина:""{0}""", ex.Message), "IoFarm.CreateCurentPuulList", EventEn.Error, true, true);
+                throw ex;
+            }
+        }
+
+
+        /// <summary>
         /// Остановка аснхронных процессов перед выключением всех потоков
         /// </summary>
         public static void Stop()
         {
             try
             {
-                // Если список пулов ещё не создавали то создаём его
+                // Если список пулов ещё создавали
                 if (CurentPulList != null)
                 {
+                    IsRunThrCreateCurentPulList = false;
+
                     // Пробегаем по всем доступным объектам
                     foreach (IoBase.IoListBase.CrossLink itemPul in CurentPulCrossLink)
                     {
@@ -340,10 +400,25 @@ namespace IoNodeWorker.BLL
                     // Пробегаем по всем доступным объектам
                     Stop();
 
+                    if (Com.RepositoryFarm.CurentRep != null && Com.RepositoryFarm.CurentRep.HashConnect)
+                    {
+                        // Фиксируем версию нашего приложения и его статус
+                        Version Ver = Assembly.GetExecutingAssembly().GetName().Version;
+                        ((RepositoryI)Com.RepositoryFarm.CurentRep).NodeSetStatus(Environment.MachineName, DateTime.Now, Ver.ToString(), EventEn.Stoping.ToString());
+                    }
+
                     // Пробегаем по всем доступным объектам
                     foreach (IoBase.IoListBase.CrossLink itemPul in CurentPulCrossLink)
                     {
                         itemPul.Join(Aborting);
+                    }
+
+                    if (ThrCreateCurentPulList!=null) ThrCreateCurentPulList.Join();
+                    if (Com.RepositoryFarm.CurentRep != null && Com.RepositoryFarm.CurentRep.HashConnect)
+                    {
+                        // Фиксируем версию нашего приложения и его статус
+                        Version Ver = Assembly.GetExecutingAssembly().GetName().Version;
+                        ((RepositoryI)Com.RepositoryFarm.CurentRep).NodeSetStatus(Environment.MachineName, DateTime.Now, Ver.ToString(), EventEn.Stop.ToString());
                     }
                 }
             }

@@ -16,6 +16,14 @@ namespace IoNodeWorker.Lib
         /// </summary>
         Empty,
         /// <summary>
+        /// В процессе запуска
+        /// </summary>
+        Running,
+        /// <summary>
+        /// Работает
+        /// </summary>
+        Runned,
+        /// <summary>
         /// Успех
         /// </summary>
         Success,
@@ -42,6 +50,14 @@ namespace IoNodeWorker.Lib
         /// <summary>
         /// Флаг тарсировки
         /// </summary>
-        Trace
+        Trace,
+        /// <summary>
+        /// В процессе остановки
+        /// </summary>
+        Stoping,
+        /// <summary>
+        /// Остановлен
+        /// </summary>
+        Stop
     }
 }
